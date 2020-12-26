@@ -22,3 +22,5 @@ export GOPATH="$HOME/.local/go"
   fi
 }
 
+proxy_port=1087
+

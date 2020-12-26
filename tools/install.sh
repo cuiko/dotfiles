@@ -82,8 +82,8 @@ install-fd() {
 
 install-fzf() {
   echo "install fzf"
-  version=${1:-0.21.1}
-  name=fzf-${version}-linux_amd64.tgz
+  version=${1:-0.23.1}
+  name=fzf-${version}-${platform}_amd64.tgz
   curl -L https://github.com/junegunn/fzf-bin/releases/download/${version}/$name -o /tmp/$name &&
   tar xzf /tmp/$name -C /usr/local/bin --no-same-owner
 }

@@ -1,0 +1,15 @@
+set number
+set relativenumber
+
+nnoremap H ^
+nnoremap L $
+
+vnoremap H ^
+vnoremap L $
+
+inoremap jk <Esc>
+inoremap ( ()<Esc>i
+inoremap [ []<Esc>i
+inoremap { {}<Esc>i
+inoremap ' ''<Esc>i
+inoremap " ""<Esc>i
