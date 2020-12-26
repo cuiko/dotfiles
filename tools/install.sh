@@ -105,6 +105,16 @@ install-exa() {
   mv /tmp/${name%-$version*} /usr/local/bin/exa
 }
 
+install-nvim() {
+	echo "install nvim"
+	version=${1:-0.2.3}
+	name=jarvim-x86_64-${platform}
+	curl -L https://github.com/glepnir/jarvim/releases/download/v${version}/${name} -o /tmp/$name &&
+	chmod +rx /tmp/$name &&
+	/tmp/$name -g &&
+	rm /tmp/$name
+}
+
 main() {
   name=$1
   shift
@@ -152,8 +162,11 @@ main() {
     clang-format)
       install-clang-format $@
     ;;
+		nvim)
+			install-nvim $@
+		;;
     *)
-      echo "usage: $0 (docker|docker-compose|golang|node|rust|protoc|clang-format)"
+      echo "usage: $0 (docker|docker-compose|golang|node|rust|protoc|clang-format|nvim)"
     ;;
   esac
 }
