@@ -123,7 +123,8 @@ install-make() {
   tar -zxvf /tmp/$name &&
   cd /tmp/make${version} &&
   ./configure &&
-  make && make install
+  make && make install &&
+  rm /tmp/$name
 }
 
 main() {
