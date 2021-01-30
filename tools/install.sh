@@ -115,6 +115,17 @@ install-nvim() {
   rm /tmp/$name
 }
 
+install-make() {
+  echo "install make"
+  version=${1:-4.3}
+  name=make${version}.tar.gz
+  curl -L https://ftp.gnu.org/gnu/make/${name} -o /tmp/$name &&
+  tar -zxvf /tmp/$name &&
+  cd /tmp/make${version} &&
+  ./configure &&
+  make && make install
+}
+
 main() {
   name=$1
   shift
@@ -165,8 +176,11 @@ main() {
     nvim)
       install-nvim $@
     ;;
+    make)
+      install-make $@
+    ;;
     *)
-      echo "usage: $0 (docker|docker-compose|golang|node|rust|protoc|clang-format|nvim)"
+      echo "usage: $0 (docker|docker-compose|golang|node|rust|protoc|clang-format|nvim|make)"
     ;;
   esac
 }
