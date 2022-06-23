@@ -1,3 +1,5 @@
---theme='OneHalfDark'
+--theme='gruvbox-dark'
 
 --style='numbers,header,grid'
+
+--paging='never'

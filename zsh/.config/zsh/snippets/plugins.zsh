@@ -1,54 +1,91 @@
+libs=(
+  # OMZL::theme-and-appearance.zsh
+  # OMZL::git.zsh
+  # OMZL::prompt_info_functions.zsh
+
+  OMZL::clipboard.zsh
+  OMZL::completion.zsh
+  OMZL::directories.zsh
+  OMZL::history.zsh
+  OMZL::key-bindings.zsh
+)
+
 # ohmyzsh 相关
 snippets=(
-  OMZ::lib/completion.zsh
-  OMZ::lib/directories.zsh
-  OMZ::lib/history.zsh
-  OMZ::lib/key-bindings.zsh
-  wait"0" lucid
-    OMZ::plugins/docker-compose/docker-compose.plugin.zsh
-  wait"0" lucid
-    OMZ::plugins/sudo/sudo.plugin.zsh
-  wait"2" lucid svn
-    OMZ::plugins/extract
-  wait"2" lucid
-    OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+  nocd wait"2"
+    OMZP::colored-man-pages/colored-man-pages.plugin.zsh
+  nocd wait"0"
+    OMZP::docker-compose/docker-compose.plugin.zsh
+  nocd wait"0"
+    OMZP::sudo/sudo.plugin.zsh
+  nocd wait"0" atinit="[[ ! -e $ZSH_CACHE_DIR/completions ]] && mkdir $ZSH_CACHE_DIR/completions" atload="zicompinit; zicdreplay"
+    OMZP::kubectl/kubectl.plugin.zsh
+  nocd wait"2" 
+    OMZP::extract/extract.plugin.zsh
 )
 
 # 补全
 completions=(
   mv"*.zsh -> _fzf" atload'source _fzf'
     'https://github.com/junegunn/fzf/blob/master/shell/completion.zsh'
-  mv"*.zsh -> _exa" nocd
-    'https://github.com/ogham/exa/blob/master/completions/completions.zsh'
+
+  'https://github.com/ogham/exa/blob/master/completions/zsh/_exa'
+
   nocd
-    OMZ::plugins/docker-compose/_docker-compose
+    OMZP::docker-compose/_docker-compose
+
   nocd
-    OMZ::plugins/docker/_docker
+    OMZP::docker/_docker
+
   nocd
-    OMZ::plugins/fd/_fd
-  nocd
-    OMZ::plugins/cargo/_cargo
-  nocd
-    OMZ::plugins/rust/_rust
+    OMZP::fd/_fd
+
+  nocd mv=":zsh -> _cht" 
+    https://cheat.sh/:zsh
 )
 
 keybinds=(
   'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
 )
 
+set_fast_theme() {
+    FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}alias]='fg=cyan'
+    FAST_HIGHLIGHT_STYLES[${FAST_THEME_NAME}function]='fg=cyan'
+}
+
 # 插件
 plugins=(
-  atload"_zsh_autosuggest_start"
-    zsh-users/zsh-autosuggestions
-  atinit"zicompinit; zicdreplay"
-    zdharma/fast-syntax-highlighting
+  atload="set_fast_theme"
+    zdharma-continuum/fast-syntax-highlighting
+
+  zchee/zsh-completions
+
   blockf atpull'zinit creinstall -q .'
     zsh-users/zsh-completions
-  skywind3000/z.lua
-  changyuheng/fz
+
+  atload"_zsh_autosuggest_start"
+    zsh-users/zsh-autosuggestions
+
   Aloxaf/fzf-tab
-  wait"0c"
-    wfxr/forgit
+
   hlissner/zsh-autopair
+
+  # Aloxaf/zsh-histdb
+  wait"0c"
+    skywind3000/z.lua
+  changyuheng/fz
+  # agkozak/zsh-z
+
+  # wait"0c"
+  #   wfxr/forgit
+
+  hchbaw/zce.zsh
+
+  Aloxaf/gencomp
+)
+
+programs=(
+  as="program" id-as="cht.sh" pick"cht.sh" 
+    https://cht.sh/:cht.sh
 )
 

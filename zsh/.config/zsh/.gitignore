@@ -1,0 +1,12 @@
+*
+!.gitignore
+!.p10k.zsh
+!.zprofile
+!.zshrc
+!snippets/
+!snippets/*.zsh
+!functions/
+!functions/*
+!zinit/
+!zshrc.zsh
+!.env
