@@ -10,6 +10,7 @@ null_ls.setup({
     debug = false,
     sources = {
         formatting.stylua,
+		formatting.autopep8,
         -- formatting.gofumpt,
         -- formatting.goimports,
         -- diagnostics.flake8

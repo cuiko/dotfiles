@@ -25,6 +25,7 @@ set smarttab        " Tab insert blanks according to 'shiftwidth'
 set autoindent      " Use same indenting on new lines
 set smartindent     " Smart autoindenting on new lines
 set shiftround      " Round indent to multiple of 'shiftwidth'
+set cursorline 		" highlight current line
 " }}}
 
 " Searching {{{

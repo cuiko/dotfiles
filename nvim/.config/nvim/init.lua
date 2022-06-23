@@ -1,3 +1,5 @@
+vim.cmd([[source ~/.vimrc]])
+
 pcall(require, "impatient")
 
 require("colorscheme")
