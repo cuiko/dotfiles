@@ -17,8 +17,8 @@ local options = {
 
     mouse = "a",
 
-    foldmethod = "manual", -- folding, set to "expr" for treesitter based folding
-    foldexpr = "", -- set to "nvim_treesitter#foldexpr()" for treesitter based folding
+    foldmethod = "expr", -- folding, set to "expr" for treesitter based folding
+    foldexpr = "nvim_treesitter#foldexpr()", -- set to "nvim_treesitter#foldexpr()" for treesitter based folding
 
     wrap = false,
 
