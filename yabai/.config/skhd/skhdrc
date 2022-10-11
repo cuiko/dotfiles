@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+# load application shortcuts
+.load "./shortcuts/application"
+
+# load yabai shortcuts
+.load "./shortcuts/yabai"
+
