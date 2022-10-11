@@ -13,7 +13,7 @@ sudo yabai --load-sa
 # only load apps that need to be managed
 yabai -m rule --add app=".+" manage=off
 yabai -m rule --add app=".+" mouse_follows_focus=off
-apps=$(awk -v ORS='|' '{if($0!="") print $0}' $yabai_config_path/yabaimanaged)
+apps=$(awk -v ORS='|' '{if($0!="") print $0}' $XDG_CONFIG_HOME/yabai/yabaimanaged)
 yabai -m rule --add app="^${apps%?}$" manage=on
 yabai -m rule --add app="^${apps%?}$" mouse_follows_focus=on
 
