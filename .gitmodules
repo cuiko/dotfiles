@@ -4,3 +4,6 @@
 [submodule "tmux/.local/share/tmux/plugins/tpm"]
 	path = tmux/.local/share/tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
+[submodule "yabai/.hammerspoon/stackline"]
+	path = yabai/.hammerspoon/stackline
+	url = https://github.com/AdamWagner/stackline.git

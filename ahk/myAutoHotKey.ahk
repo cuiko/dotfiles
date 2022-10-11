@@ -1,10 +1,4 @@
-﻿;              ---测试---
-;----------------------------------------
-
-
-;----------------------------------------
-
-;            ---全局配置---
+﻿;            ---全局配置---
 ;========================================
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
@@ -60,12 +54,15 @@ For index, value in DesktopNames {
   wsn := "#+" . index
   wcn := "#^" . index
   ; MsgBox, %index%aaa
+  ; 将当前窗口移动到指定桌面
   Hotkey, %wn%, OnCurrentWindowMoveNumberedPress
+  ; 将当前窗口移动到指定桌面并切换桌面
   Hotkey, %wsn%, OnMoveAndSwitchNumberedPress
+  ; 切换桌面
   Hotkey, %wcn%, OnMoveNumberedPress
 }
 
-;           ---引入 taskbar---
+;           ---引入taskbar---
 ;========================================
 #Include, %A_ScriptDir%\taskbar-top.ahk
 ; #Include, %A_ScriptDir%\taskbar-right.ahk
@@ -80,10 +77,6 @@ For index, value in DesktopNames {
 ;========================================
 ; 最小化活动窗口
 <!Esc:: WinMinimize, A
-<!b::Run https://www.baidu.com/
-<!n::Run https://fanyi.baidu.com/translate
-<!g::Run https://www.google.com/
-<!h::Run https://translate.google.cn/
 <!c::Run %ComSpec% /k cd /d `%USERPROFILE`%\Desktop
 <!+c::
   Run *RunAs %ComSpec%, , UseErrorLevel
@@ -107,118 +100,6 @@ For index, value in DesktopNames {
 ;========================================
 #Esc::
   _ShowTooltip(DesktopNames[_GetCurrentDesktopNumber()])
-  Return
-;    ---alt+9 | alt+0输出原始圆括号并左键一格---
-;========================================
-!9::
-  Send {Text}()
-  Send {Left}
-  Return
-!0::
-  Send {Text})
-  Return
-;    ---alt+[ | alt+]输出原始方括号并左键一格---
-;========================================
-!VKDB::
-  Send {Text}[]
-  Send {Left}
-  Return
-!VKDD::
-  Send {Text}]
-  Return
-;    						---alt+' | "并左键一格---
-;========================================================
-!VKDE::
-  Send {Text}''
-  Send {Left}
-  Return
-!+VKDE::
-  Send {Text}""
-  Send {Left}
-  Return
-;    						---alt+{ | }并左键一格---
-;========================================================
-!+VKDB::
-  Send {Text}{}
-  Send {Left}
-  Return
-!+VKDD::
-  Send {Text}}
-  Return
-;    							---alt+; | :输出原始; | :---
-;========================================================
-!VKBA::
-  Send {Text};
-  Return
-!+VKBA::
-  Send {Text}:
-  Return
-;    							---alt+-输出原始_---
-;========================================================
-!VKBD::
-  Send {Text}_
-  Return
-;    							---alt+\输出原始\---
-;========================================================
-!VKDC::
-  Send {Text}\
-  Return
-;    							---alt+`输出原始`---
-;========================================================
-!`::
-  Send {Text}``
-  Return
-;    							---alt+1输出原始!---
-;========================================================
-!1::
-  Send {Text}!
-  Return
-;    							---alt+4输出原始$---
-;========================================================
-!4::
-  Send {Text}$
-  Return
-;    							---alt+6输出原始^---
-;========================================================
-!6::
-  Send {Text}^
-  Return
-;    							---alt+. | >输出原始. | >---
-;========================================================
-!VKBE::
-  Send {Text}.
-  Return
-!+VKBE::
-  Send {Text}>
-  Return
-;    							---alt+, | <输出原始, | <---
-;========================================================
-!VKBC::
-  Send {Text},
-  Return
-!+VKBC::
-  Send {Text}<>
-  Sleep, 1
-  Send {Left}
-  Return
-;    							---alt+/ | ?输出原始,/ | ?---
-;========================================================
-<!VKBF::
-  Send {Text}/
-  Return
-<!+VKBF::
-  Send {Text}?
-  Return
-;      		---]d显示当前时间---
-;========================================
-:*:]d::
-  FormatTime, CurrentDateTime,, yyyy-M-d hh:mm:ss
-  SendInput %CurrentDateTime%
-  Return
-;      ---鼠标5键打开应用切换模式---
-;========================================
-XButton2::
-  Send {LWin down}{tab}{LWin up}
   Return
 
 ;          ---大写键切换输入法---
@@ -289,6 +170,7 @@ CapsLock::
     before := ""
     Return
 #If
+
 ;	 	 ---Chrome/edge 鼠标滚轮切换标签, 滚动左右键关闭标签---
 ;============================================================
 #If WinActive("ahk_exe chrome.exe") or WinActive("ahk_exe msedge.exe")
@@ -349,36 +231,7 @@ CapsLock::
     }
     Return
 #If
-;						---360浏览器滚动左右键关闭标签---
-;============================================================
-#If WinActive("ahk_exe 360chrome.exe")
-  ~WheelLeft::
-    CoordMode, Mouse, Window
-    MouseGetPos, xpos, ypos
-    WinGetPos, X, Y, Width, Height
-    ; 用户信息高度
-    infoHeight := 100
-    ; 标签高度
-    tabHeight := 40
-    If (xpos >= 0 && xpos <= Width && ypos >= infoHeight && ypos <= (infoHeight + tabHeight)) {
-      Send {Esc}
-      Send {Text}<<
-    }
-    Return
-  ~WheelRight::
-    CoordMode, Mouse, Window
-    MouseGetPos, xpos, ypos
-    WinGetPos, X, Y, Width, Height
-    ; 用户信息高度
-    infoHeight := 100
-    ; 标签高度
-    tabHeight := 40
-    If (xpos >= 0 && xpos <= Width && ypos >= infoHeight && ypos <= (infoHeight + tabHeight)) {
-      Send {Esc}
-      Send {Text}>>
-    }
-    Return
-#If
+
 ; 				---------方法---------
 ;========================================
 _MouseIsOver(WinTitle) {
