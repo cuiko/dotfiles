@@ -52,12 +52,12 @@ yabai -m config mouse_action1 move
 yabai -m config mouse_action2 resize
 # set focus follows mouse mode (default: off, options: off, autoraise, autofocus)
 yabai -m config focus_follows_mouse autofocus
+# floating windows are always on top (default: off)
+yabai -m config window_topmost off
 # set mouse follows focus mode (default: off)
 yabai -m config mouse_follows_focus on
 # action performed when a bsp-managed window is dropped in the center of some other bsp-managed window (options: swap, stack)
 yabai -m config mouse_drop_action stack
-# floating windows are always on top (default: off)
-yabai -m config window_topmost on
 # modify window shadows (default: on, options: on, off, float)
 # example: show shadows only for floating windows
 yabai -m config window_shadow float
