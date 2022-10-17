@@ -14,20 +14,8 @@ sudo yabai --load-sa
 apps=$(awk -v ORS='|' '{if($0!="") print $0}' $XDG_CONFIG_HOME/yabai/yabaimanaged)
 yabai -m rule --add app!="^${apps%?}$" manage=off
 
-# copy from https://github.com/koekeishiya/yabai/issues/1405
-function focus_recent_window() {
-    yabai -m query --windows | jq -re --arg APP "$1" '
-        map(select(.app == $APP and ."is-minimized" == false))
-        | first as $recent
-        | sort_by(.id)
-        | length as $len
-        | index(map(select(."has-focus" == true))) as $focused
-        | if $focused | not then $recent.id elif $focused < $len - 1 then nth($focused + 1).id else nth(0).id end
-    ' | xargs -I{} yabai -m window --focus {}
-}
-# event signal listen
-yabai -m signal --add event=window_minimized action="focus_recent_window"
-yabai -m signal --add event=window_destroyed action="focus_recent_window"
+# debug output
+yabai -m config debug_output off
 
 # ====== global configure ======
 # https://github.com/koekeishiya/yabai/wiki/Configuration
