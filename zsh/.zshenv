@@ -10,6 +10,8 @@ skip_global_compinit=1
 () {
   local USER_PATH=(
     $HOME/.local/bin
+    $HOME/.cargo/bin
+    $GOBIN
   )
 
   if [[ ! $PATH =~ $USER_PATH ]]; then
