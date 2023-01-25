@@ -1,6 +1,0 @@
-map D scrollFullPageDown
-map U scrollFullPageUp
-map << closeTabsOnLeft
-map >> closeTabsOnRight
-map cc closeOtherTabs
-map i blank
