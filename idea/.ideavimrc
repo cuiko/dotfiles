@@ -1,4 +1,4 @@
-source ~/.vimrc
+source $HOME/.vimrc
 
 " set-commands https://github.com/JetBrains/ideavim/blob/master/doc/set-commands.md
 set number
