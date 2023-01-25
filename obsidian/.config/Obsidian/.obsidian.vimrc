@@ -1,4 +1,4 @@
-# obsidian vimrc
+" obsidian vimrc
 set clipboard=unnamed
 
 nmap <Space>h :nohlsearch<CR>
