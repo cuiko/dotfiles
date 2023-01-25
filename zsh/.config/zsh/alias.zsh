@@ -10,6 +10,8 @@ alias rm='rm -i'
 alias la='ls -la'  lt='ls --tree'  ll='ls -l'  l='ls'
 alias cp='cp -v'   mv='mv -v'
 
+alias python='python3'
+
 # functions
 proxy() {
   if [[ "$1" != "" ]]; then
