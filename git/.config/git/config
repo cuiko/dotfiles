@@ -3,7 +3,7 @@
 	name = cuiko
 
 [url "git@github.com:"]
-	insteadof = https://github.com/
+	insteadOf = https://github.com/
 
 [init]
 	defaultBranch = main
