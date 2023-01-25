@@ -1,3 +1,6 @@
 [submodule "yabai/.hammerspoon/stackline"]
 	path = yabai/.hammerspoon/stackline
 	url = https://github.com/AdamWagner/stackline.git
+[submodule "lvim/.config/lvim"]
+	path = lvim/.config/lvim
+	url = git@github.com:imzhongqi/lvim.git
