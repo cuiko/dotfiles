@@ -4,3 +4,8 @@ export GO111MODULE=on
 export GOPROXY=https://goproxy.io,direct
 # Set environment variable allow bypassing the proxy for specified repos (optional)
 # export GOPRIVATE=git.mycompany.com,github.com/my/private
+
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+
+add_path $GOBIN
