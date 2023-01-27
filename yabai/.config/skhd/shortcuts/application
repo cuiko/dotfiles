@@ -1,2 +1,9 @@
 # app shortcuts
-# fn - t : open /Applications/kitty.app
+fn - t : open /Applications/kitty.app
+fn - a : open /Applications/Arc.app
+fn - c : open '/Applications/Visual Studio Code.app'
+fn - n : open /Applications/Notion.app
+fn - g : open /Applications/Goland.app
+fn - s : open /Applications/Spotify.app
+fn - o : open /Applications/Obsidian.app
+fn - w : open /Applications/Wechat.app
