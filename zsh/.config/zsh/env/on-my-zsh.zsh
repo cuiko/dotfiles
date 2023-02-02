@@ -28,6 +28,7 @@ plugins=(
     fzf-tab
     zsh-syntax-highlighting
     zsh-autosuggestions
+    git-open
 )
 
 # fzf configure

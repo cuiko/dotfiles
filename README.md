@@ -2,10 +2,11 @@
 
 ## Requirements
 
-- stow
+COMMANDS=(zsh stow git curl unzip bat exa fzf fd rg)
 - zsh
-- curl
+- stow
 - git
+- curl
 - unzip
 
 ```bash
