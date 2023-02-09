@@ -1,0 +1,69 @@
+" $XDG_CONFIG_HOME/ideavim/ideavimrc
+
+" keymaps
+let mapleader=" "
+
+nnoremap <leader>h :nohlsearch<CR>
+
+nnoremap H ^
+nnoremap L $
+nnoremap dH d^
+
+vnoremap H ^
+vnoremap L $
+
+inoremap jk <Esc>
+inoremap <S-Tab> <cmd>normal <<<CR>
+
+" set-commands https://github.com/JetBrains/ideavim/blob/master/doc/set-commands.md
+set relativenumber
+set clipboard+=ideaput
+set scrolloff=5
+set incsearch
+
+" ideavim plugins
+" wiki https://github.com/JetBrains/ideavim/wiki/Emulated-plugins
+" https://github.com/tpope/vim-surround
+set surround
+" https://github.com/easymotion/vim-easymotion
+set easymotion
+map <leader>f <Plug>(easymotion-s)
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+" Use upper target labels and type as a lower case
+let g:EasyMotion_use_upper = 0
+
+inoremap ( ()<Esc>i
+inoremap [ []<Esc>i
+inoremap { {}<Esc>i
+inoremap ' ''<Esc>i
+inoremap " ""<Esc>i
+
+nnoremap <leader>1 :action GoToTab1<CR>
+nnoremap <leader>2 :action GoToTab2<CR>
+nnoremap <leader>3 :action GoToTab3<CR>
+nnoremap <leader>4 :action GoToTab4<CR>
+nnoremap <leader>5 :action GoToTab5<CR>
+nnoremap <leader>6 :action GoToTab6<CR>
+nnoremap <leader>7 :action GoToTab7<CR>
+nnoremap <leader>8 :action GoToTab8<CR>
+nnoremap <leader>9 :action GoToTab9<CR>
+nnoremap <A-]> gt
+nnoremap <A-[> gT
+nnoremap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
+
+nnoremap <leader>>> :action CloseAllToTheRight<CR>
+nnoremap <leader><< :action CloseAllToTheLeft<CR>
+nnoremap <leader>cc :action CloseAllEditorsButActive<CR>
+nnoremap <leader>C :action CloseAllEditors<CR>
+nnoremap <leader>c :action CloseContent<CR>
+nnoremap <leader>e :action SelectInProjectView<CR>
+nnoremap <leader>gb :action Annotate<CR>
+nnoremap <leader>t :action ActivateTerminalToolWindow<CR>
+
+nnoremap gr :action RenameElement<CR>
+nnoremap gu :action ShowUsages<CR>
+nnoremap gfu :action FindUsages<CR>
+nnoremap gh :action ShowErrorDescription<CR>
+nnoremap gi :action GotoImplementation<CR>
