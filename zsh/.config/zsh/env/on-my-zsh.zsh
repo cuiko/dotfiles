@@ -24,6 +24,8 @@ plugins=(
     tmux
     colored-man-pages
     safe-paste
+    docker
+    docker-compose
     # thridpart
     fzf-tab
     zsh-syntax-highlighting
