@@ -49,7 +49,6 @@ set noruler             " Disable default status ruler
 set shortmess=aFc
 set scrolloff=2         " Keep at least 2 lines above/below
 set fillchars+=vert:\|  " add a bar for vertical splits
-set fcs=eob:\           " hide ~ tila
 set list
 set listchars=tab:»·,nbsp:+,trail:·,extends:→,precedes:←
 set title
