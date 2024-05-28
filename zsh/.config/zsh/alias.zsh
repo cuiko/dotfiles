@@ -3,6 +3,7 @@ command_check() {
 }
 
 command_check exa && alias ls='exa -bh'
+command_check eza && alias exa='eza'
 command_check bat && alias cat='bat --plain'
 
 alias rm='rm -i'
