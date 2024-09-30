@@ -2,8 +2,7 @@ command_check() {
 	command -v $1 &>/dev/null
 }
 
-command_check exa && alias ls='exa -bh'
-command_check eza && alias exa='eza'
+command_check eza && alias ls='eza -bh'
 command_check bat && alias cat='bat --plain'
 
 alias rm='rm -i'
