@@ -23,11 +23,12 @@ DISABLE_LS_COLORS="true"
 plugins=(
     # official
     z
-    tmux
+    # tmux
     colored-man-pages
     safe-paste
     docker
     docker-compose
+    sudo
     # thridpart
     fzf-tab
     zsh-syntax-highlighting
