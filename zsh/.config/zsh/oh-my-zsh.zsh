@@ -28,6 +28,7 @@ plugins=(
     safe-paste
     docker
     docker-compose
+    kubectl
     sudo
     # thridpart
     fzf-tab
