@@ -1,5 +1,5 @@
-alias ls='eza -bh'
-alias cat='bat --plain'
+command -v eza > /dev/null && alias ls='eza -bh'
+command -v bat > /dev/null && alias cat='bat --plain'
 
 alias rm='rm -i'
 alias la='ls -la'  lt='ls --tree'  ll='ls -l'  l='ls'
