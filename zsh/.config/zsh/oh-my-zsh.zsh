@@ -37,6 +37,9 @@ plugins=(
     git-open
 )
 
+# disable update checker
+zstyle ':omz:update' mode disabled
+
 # fzf configure
 # disable sort when completing `git checkout`
 zstyle ':completion:*:git-checkout:*' sort false

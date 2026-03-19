@@ -14,18 +14,22 @@ skip_global_compinit=1
 
 # ap
 # proxy_port=7890
+# proxy_addr=http://localhost:$proxy_port
 
 # starship
 export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
 
 # ssh
-export SSH_PROXY=127.0.0.1:1081
+# export SSH_PROXY=$proxy_addr
 
 # go
 export GOPATH=$HOME/go
 export GOBIN=$GOPATH/bin
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io,direct
+
+# mise
+# eval "$(~/.local/bin/mise activate zsh)"
 
 # n
 # export N_PREFIX=$HOME/.n
