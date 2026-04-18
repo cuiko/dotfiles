@@ -36,11 +36,11 @@ export GOPROXY=https://goproxy.io,direct
 # export NODE_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
 
 # wezterm
-if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
-  WEZTERM_SHELL_SKIP_SEMANTIC_ZONES="1"
-  WEZTERM_SHELL_SKIP_CWD="1"
-  source $ZDOTDIR/wezterm.sh
-fi
+# if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
+#   WEZTERM_SHELL_SKIP_SEMANTIC_ZONES="1"
+#   WEZTERM_SHELL_SKIP_CWD="1"
+#   source $ZDOTDIR/wezterm.sh
+# fi
 
 # openai
 export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx"
