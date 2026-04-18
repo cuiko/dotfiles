@@ -23,7 +23,7 @@ export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
 # export SSH_PROXY=$proxy_addr
 
 # go
-export GOPATH=$HOME/go
+export GOPATH=$HOME/.go
 export GOBIN=$GOPATH/bin
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io,direct
