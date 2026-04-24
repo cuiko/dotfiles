@@ -31,10 +31,6 @@ export GOPROXY=https://goproxy.io,direct
 # mise
 # eval "$(~/.local/bin/mise activate zsh)"
 
-# n
-# export N_PREFIX=$HOME/.n
-# export NODE_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/
-
 # wezterm
 # if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
 #   WEZTERM_SHELL_SKIP_SEMANTIC_ZONES="1"
