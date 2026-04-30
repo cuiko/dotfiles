@@ -26,7 +26,7 @@ export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
 export GOPATH=$HOME/.go
 export GOBIN=$GOPATH/bin
 export GO111MODULE=on
-export GOPROXY=https://goproxy.io,direct
+export GOPROXY=https://goproxy.cn,direct
 
 # mise
 # eval "$(~/.local/bin/mise activate zsh)"
