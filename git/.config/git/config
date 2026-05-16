@@ -11,6 +11,8 @@
 [core]
 	excludesfile = ~/.config/git/gitignore
 	pager = delta
+	untrackedcache = true
+	fsmonitor = true
 
 [interactive]
 	diffFilter = delta --color-only
@@ -33,7 +35,7 @@
 	plus-style = "syntax #2C3E36"
 	plus-emph-style = "bold syntax #3E5A47"
 	line-numbers = true
-	line-numbers-left-format = "{nm:>3}⋮"
+	line-numbers-left-format = "{nm:>3} ┊"
 	line-numbers-right-format = "{np:>3}│"
 	line-numbers-right-style = "#6c7086"
 	line-numbers-minus-style = "#f38ba8"
@@ -42,3 +44,6 @@
 
 [merge]
 	conflictstyle = zdiff3
+
+[feature]
+	manyFiles = true

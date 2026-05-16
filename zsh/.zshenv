@@ -13,8 +13,8 @@ export ENVFILEPATH=$ZDOTDIR/env
 skip_global_compinit=1
 
 # ap
-# proxy_port=7890
-# proxy_addr=http://localhost:$proxy_port
+proxy_port=7890
+proxy_addr=http://192.168.123.2:$proxy_port
 
 # starship
 export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
@@ -25,19 +25,14 @@ export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
 # go
 export GOPATH=$HOME/.go
 export GOBIN=$GOPATH/bin
-export GO111MODULE=on
 export GOPROXY=https://goproxy.cn,direct
 
 # mise
-# eval "$(~/.local/bin/mise activate zsh)"
-
-# wezterm
-# if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
-#   WEZTERM_SHELL_SKIP_SEMANTIC_ZONES="1"
-#   WEZTERM_SHELL_SKIP_CWD="1"
-#   source $ZDOTDIR/wezterm.sh
-# fi
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 # openai
-export OPENAI_API_KEY="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export OPENAI_API_ENDPOINT="https://api.openai.com/v1/chat/completions"
+export OPENAI_API_KEY=""
+export OPENAI_API_ENDPOINT=""
+
+# podcast
+export TTS_BACKEND="edge"

@@ -1,17 +1,95 @@
 #!/bin/bash
+set -euo pipefail
 
-COMMANDS=(zsh stow git curl unzip bat eza fzf fd rg starship)
+DOTFILES="$(cd "$(dirname "$0")" && pwd)"
+PREREQS=(zsh git curl)
 
-check_cmd() {
-  command -v "$1" >/dev/null 2>&1
+pkg_install() {
+  if command -v brew >/dev/null 2>&1; then
+    brew install "$@"
+  elif command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get install -y "$@"
+  elif command -v pacman >/dev/null 2>&1; then
+    sudo pacman -S --noconfirm "$@"
+  elif command -v dnf >/dev/null 2>&1; then
+    sudo dnf install -y "$@"
+  else
+    printf 'error: no supported package manager found\n'
+    exit 1
+  fi
 }
 
-main() {
-  for cmd in "${COMMANDS[@]}"; do
-    if ! check_cmd $cmd; then
-      printf 'check failed, command `%s` not found.\n' $cmd
+check_prereqs() {
+  local missing=()
+  for cmd in "${PREREQS[@]}"; do
+    command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
+  done
+  if (( ${#missing[@]} )); then
+    printf 'missing prerequisites: %s\n' "${missing[*]}"
+    exit 1
+  fi
+}
+
+install_stow() {
+  if command -v stow >/dev/null 2>&1; then
+    echo "stow: already installed"
+  else
+    echo "stow: installing..."
+    pkg_install stow
+  fi
+}
+
+install_tpm() {
+  local tpm_dir="$HOME/.local/share/tmux/plugins/tpm"
+  if [[ -d "$tpm_dir" ]]; then
+    echo "tpm: already installed"
+  else
+    echo "tpm: installing..."
+    git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+    echo "tpm: run 'prefix + I' in tmux to install plugins"
+  fi
+}
+
+install_mise() {
+  if command -v mise >/dev/null 2>&1; then
+    echo "mise: already installed"
+  else
+    echo "mise: installing..."
+    curl -fsSL https://mise.jdx.dev/install.sh | sh
+  fi
+}
+
+stow_packages() {
+  for pkg in "$DOTFILES"/*/; do
+    local name
+    name="$(basename "$pkg")"
+    printf "stow %s... " "$name"
+    if stow -d "$DOTFILES" -t "$HOME" --no-folding "$name" 2>&1; then
+      echo "ok"
+    else
+      echo "conflict"
     fi
   done
 }
 
-main
+main() {
+  local with_tmux=false
+  for arg in "$@"; do
+    case "$arg" in
+      --with-tmux) with_tmux=true ;;
+    esac
+  done
+
+  check_prereqs
+  install_stow
+  install_mise
+  stow_packages
+  echo "mise install..."
+  mise install --yes
+  if $with_tmux; then
+    install_tpm
+  fi
+  echo "done. run: exec zsh -l"
+}
+
+main "$@"

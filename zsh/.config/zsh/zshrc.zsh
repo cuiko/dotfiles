@@ -7,6 +7,8 @@ precmd_functions+=(_ghostty_pop_kbd)
 PROMPT_EOL_MARK=''
 
 source $ZDOTDIR/oh-my-zsh.zsh
+eval "$(~/.local/bin/mise activate zsh)"
+eval "$(bun completions 2>/dev/null)"
 source $ZDOTDIR/alias.zsh
 
 FPATH=$XDG_CONFIG_HOME/zsh/functions:$FPATH

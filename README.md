@@ -1,33 +1,36 @@
-# my dotfiles
+# dotfiles
 
-## Requirements
+## Prerequisites
 
-COMMANDS=(zsh stow git curl unzip bat exa fzf fd rg)
 - zsh
-- stow
 - git
 - curl
-- unzip
+
+## Install
 
 ```bash
+git clone https://github.com/cuiko/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
 ./init
 ```
 
-## Init Submodule
-```bash
-git submodule init # init the submodule
-git submodule update
-```
+The init script will automatically install `stow` and `mise`, stow all packages, and run `mise install` to set up tools.
 
-## Install
-```bash
-stow vim zsh # etc...
-```
+## Packages
 
-## Uninstall
-```bash
-stow -D vim
-```
+| Package | Description |
+|---------|-------------|
+| git     | git + delta config |
+| lazygit | lazygit config |
+| mise    | mise tool versions |
+| ssh     | ssh config |
+| tmux    | tmux config |
+| vim     | vim config |
+| zsh     | zsh + starship + oh-my-zsh |
 
-## 参考
-[大佬的配置](https://github.com/Aloxaf/dotfiles)
+## Manual stow/unstow
+
+```bash
+stow -d ~/.dotfiles -t ~ --no-folding zsh   # install
+stow -d ~/.dotfiles -t ~ -D zsh             # uninstall
+```

@@ -1,0 +1,3 @@
+$GOBIN
+$HOME/.cargo/bin
+$HOME/.local/bin
