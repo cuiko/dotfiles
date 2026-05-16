@@ -30,9 +30,8 @@ export GOPROXY=https://goproxy.cn,direct
 # mise
 export PATH="$HOME/.local/share/mise/shims:$PATH"
 
-# openai
-export OPENAI_API_KEY=""
-export OPENAI_API_ENDPOINT=""
+# secrets
+[ -f "$ZDOTDIR/secrets" ] && source "$ZDOTDIR/secrets"
 
 # podcast
 export TTS_BACKEND="edge"
