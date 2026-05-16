@@ -86,6 +86,10 @@ main() {
   stow_packages
   echo "mise install..."
   mise install --yes
+  if [[ ! -f "$HOME/.ssh/hosts.local" ]]; then
+    touch "$HOME/.ssh/hosts.local"
+    echo "ssh: created ~/.ssh/hosts.local (add your hosts here)"
+  fi
   if $with_tmux; then
     install_tpm
   fi
