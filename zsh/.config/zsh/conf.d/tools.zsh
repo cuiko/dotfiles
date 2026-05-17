@@ -2,6 +2,7 @@
 
 # Sync: needed before prompt renders
 eval "$(mise activate zsh --shims)" 2>/dev/null
+export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/starship.toml
 eval "$(starship init zsh)" 2>/dev/null
 
 # Defer: not needed until user interacts
