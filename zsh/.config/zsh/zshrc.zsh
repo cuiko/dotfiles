@@ -9,6 +9,7 @@ PROMPT_EOL_MARK=''
 source $ZDOTDIR/oh-my-zsh.zsh
 eval "$(~/.local/bin/mise activate zsh)"
 eval "$(bun completions 2>/dev/null)"
+eval "$(carapace _carapace zsh)"
 source $ZDOTDIR/alias.zsh
 
 FPATH=$XDG_CONFIG_HOME/zsh/functions:$FPATH
