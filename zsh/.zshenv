@@ -2,33 +2,23 @@ export XDG_CONFIG_HOME=$HOME/.config
 export XDG_CACHE_HOME=$HOME/.cache
 export XDG_DATA_HOME=$HOME/.local/share
 
-export TERM=${TERM:-xterm-256color}
 export LANG=${LANG:-"en_US.UTF-8"}
+export LC_COLLATE=${LC_COLLATE:-C}
 
-command -v nvim >/dev/null && export EDITOR=nvim || export EDITOR=vim
-
-# zsh
 ZDOTDIR=$XDG_CONFIG_HOME/zsh
-export ENVFILEPATH=$ZDOTDIR/env
 skip_global_compinit=1
 
-# ap
-proxy_port=7890
-proxy_addr=http://192.168.123.2:$proxy_port
+export LESSHISTFILE=/dev/null
 
-# ssh
-# export SSH_PROXY=$proxy_addr
+[[ -d /opt/homebrew ]] && export PATH=/opt/homebrew/bin:$PATH
+[[ -d /usr/local/Homebrew ]] && export PATH=/usr/local/bin:$PATH
+export PATH=$HOME/.local/bin:$ZDOTDIR/bin:$PATH
 
-# go
-export GOPATH=$HOME/.go
-export GOBIN=$GOPATH/bin
-export GOPROXY=https://goproxy.cn,direct
+export RUSTUP_HOME=$HOME/.local/rustup
+export CARGO_HOME=$HOME/.local/cargo
+export PATH=$CARGO_HOME/bin:$PATH
+export GOPATH="$HOME/.local/go"
+export GOBIN="$GOPATH/bin"
+export GOTOOLCHAIN=local
 
-# mise
-export PATH="$HOME/.local/share/mise/shims:$PATH"
-
-# secrets
-[ -f "$ZDOTDIR/secrets" ] && source "$ZDOTDIR/secrets"
-
-# podcast
-export TTS_BACKEND="edge"
+[ -f $HOME/.zshenv.local ] && source $HOME/.zshenv.local

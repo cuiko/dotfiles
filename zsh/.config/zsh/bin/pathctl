@@ -1,0 +1,547 @@
+#!/bin/bash
+set -euo pipefail
+PATHCTL_VERSION="1.0.0"
+PATHCTL_CONFIG_DIR="${HOME}/.config/pathctl"
+PATHCTL_MAIN_CONFIG="${PATHCTL_CONFIG_DIR}/paths"
+PATHCTL_CONF_D="${PATHCTL_CONFIG_DIR}/conf.d"
+PATHCTL_VALIDATE="${PATHCTL_VALIDATE:-1}"
+
+if [[ -n "${NO_COLOR:-}" ]]; then
+    RED='' GREEN='' YELLOW='' BLUE='' CYAN='' NC=''
+else
+    RED='\033[0;31m' GREEN='\033[0;32m' YELLOW='\033[1;33m' BLUE='\033[0;34m' CYAN='\033[0;36m' NC='\033[0m'
+fi
+
+print_error() { printf "${RED}Error:${NC} %s\n" "$1" >&2; }
+print_warning() { printf "${YELLOW}Warning:${NC} %s\n" "$1" >&2; }
+print_success() { printf "${GREEN}%s${NC}\n" "$1" >&2; }
+print_info() { printf "${CYAN}%s${NC}\n" "$1" >&2; }
+
+show_usage() {
+    cat << EOF
+pathctl v${PATHCTL_VERSION} - PATH management tool
+
+USAGE: pathctl <command> [options]
+
+COMMANDS:
+  put [path] [-c config]  Add path (default: ., config: paths)
+  remove, rm <path>       Remove path from configs and PATH
+  list, ls                List managed paths with status
+  activate                Activate shell integration
+  config                  Show configuration info
+  version, --version      Show version
+  help, -h, --help        Show help
+
+EXAMPLES:
+  pathctl put             # Add current directory
+  pathctl put ~/bin -c dev # Add to dev config
+  eval "\$(pathctl activate)" # Activate integration
+
+CONFIG: ~/.config/pathctl/{paths,conf.d/*}
+ENV: PATHCTL_VALIDATE=0  NO_COLOR=1
+EOF
+}
+
+ensure_config_dir() {
+    if [[ ! -d "$PATHCTL_CONFIG_DIR" ]]; then
+        mkdir -p "$PATHCTL_CONFIG_DIR"
+        print_info "Created configuration directory: $PATHCTL_CONFIG_DIR"
+    fi
+    if [[ ! -f "$PATHCTL_MAIN_CONFIG" ]]; then
+        touch "$PATHCTL_MAIN_CONFIG"
+        print_info "Created main configuration file: $PATHCTL_MAIN_CONFIG"
+    fi
+}
+
+normalize_path() {
+    local path="$1" resolved_path=""
+    [[ -z "$path" || "$path" == "." ]] && path="$(pwd)"
+    [[ ! "$path" = /* ]] && path="$(pwd)/$path"
+    
+    if command -v realpath >/dev/null 2>&1; then
+        resolved_path="$(realpath "$path" 2>/dev/null)"
+        if [[ -n "$resolved_path" ]]; then
+            path="$resolved_path"
+        elif [[ -d "$path" ]]; then
+            path="$(cd "$path" && pwd)"
+        else
+            path=$(resolve_path_manually "$path")
+        fi
+    elif [[ -d "$path" ]]; then
+        path="$(cd "$path" && pwd)"
+    else
+        path=$(resolve_path_manually "$path")
+    fi
+    
+    [[ "$path" == "$HOME"* ]] && path="\$HOME${path#$HOME}"
+    echo "$path"
+}
+
+resolve_path_manually() {
+    local path="$1" result="" component
+    local -a resolved_components=("") parts
+    IFS='/' read -ra parts <<< "$path"
+
+    for component in "${parts[@]}"; do
+        case "$component" in
+            ""|".") continue ;;
+            "..")
+                [[ ${#resolved_components[@]} -gt 1 ]] && unset "resolved_components[$((${#resolved_components[@]}-1))]"
+                ;;
+            *) resolved_components+=("$component") ;;
+        esac
+    done
+
+    if [[ ${#resolved_components[@]} -eq 1 ]]; then
+        result="/"
+    else
+        for component in "${resolved_components[@]}"; do
+            [[ -n "$component" ]] && result="$result/$component"
+        done
+    fi
+    echo "$result"
+}
+
+expand_path() {
+    local path="$1" var_name var_value
+    # Expand ~ prefix
+    path="${path/#\~\//$HOME/}"
+    # Expand ${VAR} syntax
+    while [[ "$path" =~ \$\{([a-zA-Z_][a-zA-Z_0-9]*)\} ]]; do
+        var_name="${BASH_REMATCH[1]}"
+        var_value="${!var_name:-}"
+        path="${path/\$\{$var_name\}/$var_value}"
+    done
+    # Expand $VAR syntax
+    while [[ "$path" =~ \$([a-zA-Z_][a-zA-Z_0-9]*) ]]; do
+        var_name="${BASH_REMATCH[1]}"
+        var_value="${!var_name:-}"
+        path="${path/\$$var_name/$var_value}"
+    done
+    echo "$path"
+}
+
+path_exists() {
+    local path="$1"
+    local expanded_path
+    expanded_path=$(expand_path "$path")
+    [[ -d "$expanded_path" ]]
+}
+
+get_config_files() {
+    local files=()
+    
+    if [[ -f "$PATHCTL_MAIN_CONFIG" ]]; then
+        files+=("$PATHCTL_MAIN_CONFIG")
+    fi
+    
+    if [[ -d "$PATHCTL_CONF_D" ]]; then
+        while IFS= read -r file; do
+            [[ -f "$file" ]] && files+=("$file")
+        done < <(find "$PATHCTL_CONF_D" -type f 2>/dev/null | sort)
+    fi
+    
+    [[ ${#files[@]} -gt 0 ]] && printf '%s\n' "${files[@]}" || true
+}
+
+read_paths_from_file() {
+    local config_file="$1"
+    [[ ! -f "$config_file" ]] && return
+
+    while IFS= read -r line; do
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+        [[ -z "$line" || "$line" == \#* ]] && continue
+        line="${line%%#*}"
+        line="${line%"${line##*[![:space:]]}"}"
+        [[ -n "$line" ]] && echo "$line"
+    done < "$config_file"
+}
+
+get_all_paths() {
+    local files
+    files=$(get_config_files)
+    while IFS= read -r file; do
+        [[ -n "$file" ]] && read_paths_from_file "$file"
+    done <<< "$files" | awk '!seen[$0]++'
+}
+
+is_in_current_path() {
+    local expanded_path
+    expanded_path=$(expand_path "$1")
+    case ":$PATH:" in *":$expanded_path:"*) return 0 ;; *) return 1 ;; esac
+}
+
+find_path_config() {
+    local target_path="$1" files
+    files=$(get_config_files)
+    while IFS= read -r file; do
+        while IFS= read -r config_path; do
+            [[ "$config_path" == "$target_path" ]] && echo "$file" && return 0
+        done < <(read_paths_from_file "$file")
+    done <<< "$files"
+    return 1
+}
+
+add_path_to_config() {
+    ensure_config_dir
+    local path="$1"
+    local config_name="${2:-paths}"
+    local config_file
+    
+    if [[ "$config_name" == "paths" ]]; then
+        config_file="$PATHCTL_MAIN_CONFIG"
+    else
+        if [[ ! -d "$PATHCTL_CONF_D" ]]; then
+            mkdir -p "$PATHCTL_CONF_D"
+        fi
+        config_file="${PATHCTL_CONF_D}/${config_name}"
+    fi
+    
+    # Expand environment variables first, then normalize
+    path=$(expand_path "$path")
+    path=$(normalize_path "$path")
+    
+    if find_path_config "$path" >/dev/null; then
+        print_warning "Path already managed: $path"
+        return 1  # Return 1 to indicate no change made
+    fi
+    
+    if [[ "$PATHCTL_VALIDATE" == "1" ]] && ! path_exists "$path"; then
+        local expanded_path
+        expanded_path=$(expand_path "$path")
+        print_warning "Path does not exist: $expanded_path"
+        printf "Add anyway? [y/N] "
+        read -r REPLY || REPLY=""
+        case "$REPLY" in
+            [Yy]*) ;;
+            *) return 1 ;;
+        esac
+    fi
+    
+    echo "$path" >> "$config_file"
+    print_success "Added path to ${config_name}: $path"
+}
+
+remove_path_from_configs() {
+    local target_path="$1"
+    local normalized_path
+    local removed=false
+    local files
+    
+    normalized_path=$(normalize_path "$target_path")
+    files=$(get_config_files)
+    
+    while IFS= read -r file; do
+        if [[ -f "$file" ]]; then
+            local temp_file
+            temp_file=$(mktemp)
+            local found_in_file=false
+            
+            while IFS= read -r line; do
+                local original_line="$line"
+                line="${line#"${line%%[![:space:]]*}"}"
+                line="${line%"${line##*[![:space:]]}"}"
+
+                if [[ -z "$line" || "$line" == \#* ]]; then
+                    echo "$original_line" >> "$temp_file"
+                    continue
+                fi
+
+                local path_part="${line%%#*}"
+                path_part="${path_part%"${path_part##*[![:space:]]}"}"
+
+                if [[ "$path_part" == "$normalized_path" || "$path_part" == "$target_path" ]]; then
+                    found_in_file=true
+                    removed=true
+                else
+                    echo "$original_line" >> "$temp_file"
+                fi
+            done < "$file"
+            
+            if [[ "$found_in_file" == "true" ]]; then
+                mv "$temp_file" "$file"
+                print_success "Removed path from $(basename "$file"): $normalized_path"
+            else
+                rm "$temp_file"
+            fi
+        fi
+    done <<< "$files"
+    
+    if [[ "$removed" == "false" ]]; then
+        print_error "Path not found in any configuration: $target_path"
+        return 1  # Return 1 to indicate no change made
+    fi
+    
+    return 0  # Return 0 to indicate successful change
+}
+
+list_paths() {
+    local files
+    files=$(get_config_files)
+
+    if [[ -z "$files" ]]; then
+        print_info "No paths configured"
+        return 0
+    fi
+
+    local has_any=false
+
+    while IFS= read -r file; do
+        local paths
+        paths=$(read_paths_from_file "$file")
+        [[ -z "$paths" ]] && continue
+        has_any=true
+
+        local label
+        if [[ "$file" == "$PATHCTL_MAIN_CONFIG" ]]; then
+            label="paths"
+        else
+            label=$(basename "$file")
+        fi
+        printf "${BLUE}%s${NC}\n" "$label"
+
+        while IFS= read -r item_path; do
+            local tag=""
+            if [[ "$PATHCTL_VALIDATE" == "1" ]] && ! path_exists "$item_path"; then
+                tag="${RED}not found${NC}"
+            elif ! is_in_current_path "$item_path"; then
+                tag="${YELLOW}not active${NC}"
+            fi
+
+            if [[ -n "$tag" ]]; then
+                printf "  %-40s %b\n" "$item_path" "$tag"
+            else
+                printf "  %s\n" "$item_path"
+            fi
+        done <<< "$paths"
+    done <<< "$files"
+
+    if [[ "$has_any" == "false" ]]; then
+        print_info "No paths configured"
+    fi
+}
+
+generate_activation() {
+    local paths new_path_str=""
+    local -a new_paths=()
+
+    paths=$(get_all_paths)
+
+    while IFS= read -r item_path; do
+        if [[ -n "$item_path" ]]; then
+            local expanded_path
+            expanded_path=$(expand_path "$item_path")
+
+            if [[ "$PATHCTL_VALIDATE" == "1" ]] && ! path_exists "$item_path"; then
+                continue
+            fi
+
+            if ! is_in_current_path "$item_path"; then
+                new_paths+=("$expanded_path")
+            fi
+        fi
+    done <<< "$paths"
+
+    local pathctl_script_path
+    if [[ -n "${BASH_SOURCE:-}" ]]; then
+        pathctl_script_path="${BASH_SOURCE[0]}"
+    else
+        pathctl_script_path="$0"
+    fi
+
+    pathctl_script_path=$(cd "$(dirname "$pathctl_script_path")" && pwd)/$(basename "$pathctl_script_path")
+
+    echo "export __PATHCTL_SCRIPT=\"$pathctl_script_path\""
+
+    if [[ ${#new_paths[@]} -gt 0 ]]; then
+        local i
+        for ((i=${#new_paths[@]}-1; i>=0; i--)); do
+            if [[ -z "$new_path_str" ]]; then
+                new_path_str="${new_paths[$i]}"
+            else
+                new_path_str="$new_path_str:${new_paths[$i]}"
+            fi
+        done
+        echo "export PATH=\"${new_path_str}:\$PATH\""
+    fi
+    
+    cat << 'EOF'
+
+pathctl() {
+    case "${1:-}" in
+        activate)
+            echo "pathctl is already activated" >&2
+            return 1
+            ;;
+        put)
+            if [ -n "${__PATHCTL_SCRIPT:-}" ]; then
+                if "$__PATHCTL_SCRIPT" "$@"; then
+                    eval "$("$__PATHCTL_SCRIPT" activate)"
+                fi
+            else
+                command pathctl "$@" 2>/dev/null || {
+                    echo "pathctl: command not found" >&2
+                    return 127
+                }
+            fi
+            ;;
+        remove|rm)
+            if [ -n "${__PATHCTL_SCRIPT:-}" ]; then
+                eval "$("$__PATHCTL_SCRIPT" "$@")"
+            else
+                command pathctl "$@" 2>/dev/null || {
+                    echo "pathctl: command not found" >&2
+                    return 127
+                }
+            fi
+            ;;
+        *)
+            if [ -n "${__PATHCTL_SCRIPT:-}" ]; then
+                "$__PATHCTL_SCRIPT" "$@"
+            else
+                command pathctl "$@" 2>/dev/null || {
+                    echo "pathctl: command not found" >&2
+                    return 127
+                }
+            fi
+            ;;
+    esac
+}
+EOF
+}
+
+show_config() {
+    local files path_count=0 active_count=0 paths
+    echo "pathctl v$PATHCTL_VERSION"
+    echo
+    echo "Configuration files:"
+    files=$(get_config_files)
+    if [[ -n "$files" ]]; then
+        while IFS= read -r file; do
+            local count
+            count=$(read_paths_from_file "$file" | wc -l | tr -d ' ')
+            [[ $count -gt 0 ]] && echo "  ${file#$HOME/} ($count paths)"
+        done <<< "$files"
+    else
+        echo "  No configuration files found"
+    fi
+    paths=$(get_all_paths)
+    while IFS= read -r item_path; do
+        [[ -z "$item_path" ]] && continue
+        path_count=$((path_count + 1))
+        is_in_current_path "$item_path" && active_count=$((active_count + 1))
+    done <<< "$paths"
+    echo "Total managed paths: $path_count"
+    if [[ $active_count -gt 0 ]]; then
+        print_success "pathctl is active ($active_count/$path_count paths in current PATH)"
+    else
+        print_info "pathctl is not active (run 'eval \"\$(pathctl activate)\"' to activate)"
+    fi
+}
+
+main() {
+    if [[ $# -eq 0 ]]; then
+        show_usage
+        return 0
+    fi
+    
+    local command="$1"
+    shift
+    
+    case "$command" in
+        put)
+            local path="."
+            local config="paths"
+            local path_set=false
+            
+            while [[ $# -gt 0 ]]; do
+                case "$1" in
+                    -c|--config)
+                        if [[ -n "${2:-}" ]]; then
+                            config="$2"
+                            shift 2
+                        else
+                            print_error "Option -c requires an argument"
+                            return 1
+                        fi
+                        ;;
+                    *)
+                        if [[ "$path_set" == "false" ]]; then
+                            path="$1"
+                            path_set=true
+                        else
+                            print_error "Unexpected argument: $1"
+                            return 1
+                        fi
+                        shift
+                        ;;
+                esac
+            done
+            
+            add_path_to_config "$path" "$config"
+            ;;
+            
+        remove|rm)
+            if [[ $# -eq 0 ]]; then
+                print_error "remove command requires a path argument"
+                return 1
+            fi
+            
+            local target_path="$1"
+            
+            # Delete from config (non-fatal if not found)
+            remove_path_from_configs "$target_path" || true
+            
+            # Get all possible path formats to match
+            local normalized_path expanded_path
+            normalized_path=$(normalize_path "$target_path")
+            expanded_path=$(expand_path "$normalized_path")
+            
+            echo "__pathctl_old_ifs=\"\$IFS\""
+            echo "IFS=':'"
+            echo "new_path=\"\""
+            echo "for path_entry in \$PATH; do"
+            echo "    if [ \"\$path_entry\" != \"$target_path\" ] && [ \"\$path_entry\" != \"$normalized_path\" ] && [ \"\$path_entry\" != \"$expanded_path\" ]; then"
+            echo "        if [ -z \"\$new_path\" ]; then"
+            echo "            new_path=\"\$path_entry\""
+            echo "        else"
+            echo "            new_path=\"\$new_path:\$path_entry\""
+            echo "        fi"
+            echo "    fi"
+            echo "done"
+            echo "IFS=\"\$__pathctl_old_ifs\""
+            echo "unset __pathctl_old_ifs"
+            echo "export PATH=\"\$new_path\""
+            ;;
+            
+        list|ls)
+            list_paths
+            ;;
+            
+        activate)
+            generate_activation
+            ;;
+            
+        config)
+            show_config
+            ;;
+            
+        version|--version|-V)
+            echo "pathctl v$PATHCTL_VERSION"
+            ;;
+
+        help|-h|--help)
+            show_usage
+            ;;
+            
+        *)
+            print_error "Unknown command: $command"
+            echo
+            show_usage
+            return 1
+            ;;
+    esac
+}
+
+main "$@"

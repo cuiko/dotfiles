@@ -1,0 +1,8 @@
+fpath+=( "$HOME/.cache/antidote/github.com/romkatv/zsh-defer" )
+fpath+=( "$HOME/.cache/antidote/github.com/Aloxaf/fzf-tab" )
+fpath+=( "$HOME/.cache/antidote/github.com/hlissner/zsh-autopair" )
+fpath+=( "$HOME/.cache/antidote/github.com/olets/zsh-abbr" )
+fpath+=( "$HOME/.cache/antidote/github.com/zsh-users/zsh-autosuggestions" )
+fpath+=( "$HOME/.cache/antidote/github.com/zdharma-continuum/fast-syntax-highlighting" )
+fpath+=( "$HOME/.cache/antidote/github.com/ohmyzsh/ohmyzsh/plugins/sudo" )
+fpath+=( "$HOME/.cache/antidote/github.com/paulirish/git-open" )

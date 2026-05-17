@@ -1,0 +1,12 @@
+*
+!.gitignore
+!.zshrc
+!conf.d/
+!conf.d/*
+!functions/
+!functions/*
+!bin/
+!bin/*
+!.zsh_plugins.txt
+!.zsh_plugins.zsh
+!abbreviations

@@ -1,6 +1,4 @@
-.git
-
-.*_history
-.*_sessions
+*.zwc
+.z
 .zcompdump*
-secrets
+.*_history
