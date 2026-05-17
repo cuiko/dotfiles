@@ -19,6 +19,5 @@ export CARGO_HOME=$HOME/.local/cargo
 export PATH=$CARGO_HOME/bin:$PATH
 export GOPATH="$HOME/.local/go"
 export GOBIN="$GOPATH/bin"
-export GOTOOLCHAIN=local
 
 [ -f $HOME/.zshenv.local ] && source $HOME/.zshenv.local
