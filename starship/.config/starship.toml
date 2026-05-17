@@ -67,7 +67,7 @@ read_only_style = "error_red"
 format = " [$path]($style)[$read_only]($read_only_style)"
 
 [git_branch]
-symbol = ""
+symbol = " "
 style = "bold git_purple"
 format = " [$symbol $branch(:$remote_branch)]($style)"
 truncation_length = 32
@@ -113,38 +113,38 @@ loaded_msg = "env"
 unloaded_msg = "env?"
 
 [docker_context]
-symbol = ""
+symbol = " "
 style = "bold os_cyan"
 format = "[$symbol $context]($style) "
 only_with_files = true
 
 [c]
-symbol = ""
+symbol = " "
 style = "bold os_cyan"
 format = "[$symbol ($version )]($style) "
 
 [rust]
-symbol = ""
+symbol = "󱘗 "
 style = "bold warning_yellow"
 format = "[$symbol ($version )]($style) "
 
 [golang]
-symbol = ""
+symbol = " "
 style = "bold os_cyan"
 format = "[$symbol ($version )]($style) "
 
 [nodejs]
-symbol = ""
+symbol = " "
 style = "bold success_green"
 format = "[$symbol ($version )]($style) "
 
 [python]
-symbol = ""
+symbol = " "
 style = "bold warning_yellow"
 format = "[$symbol $pyenv_prefix($version )(\\($virtualenv\\) )]($style) "
 
 [lua]
-symbol = ""
+symbol = " "
 style = "bold path_blue"
 format = "[$symbol($version )]($style) "
 
