@@ -20,13 +20,14 @@ The init script will automatically install `stow` and `mise`, stow all packages,
 
 | Package | Description |
 |---------|-------------|
-| git     | git + delta config |
-| lazygit | lazygit config |
-| mise    | mise tool versions |
-| ssh     | ssh config |
-| tmux    | tmux config |
-| vim     | vim config |
-| zsh     | zsh + starship + oh-my-zsh |
+| git      | git + delta config |
+| lazygit  | lazygit config |
+| mise     | mise tool versions |
+| ssh      | ssh config |
+| starship | starship prompt config |
+| tmux     | tmux config |
+| vim      | vim config |
+| zsh      | zsh + antidote plugins |
 
 ## Manual stow/unstow
 
