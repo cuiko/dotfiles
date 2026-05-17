@@ -16,9 +16,6 @@ skip_global_compinit=1
 proxy_port=7890
 proxy_addr=http://192.168.123.2:$proxy_port
 
-# starship
-export STARSHIP_CONFIG=$ZDOTDIR/starship.toml
-
 # ssh
 # export SSH_PROXY=$proxy_addr
 
