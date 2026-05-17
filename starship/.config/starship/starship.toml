@@ -1,0 +1,155 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = false
+command_timeout = 1500
+scan_timeout = 30
+palette = "p10k_soft"
+
+format = """
+$os\
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$c\
+$rust\
+$golang\
+$nodejs\
+$python\
+$lua\
+$fill\
+$jobs\
+$direnv\
+$docker_context\
+$status$cmd_duration$time
+$character"""
+
+[palettes.p10k_soft]
+prompt_pink = "#ffaff3"
+os_cyan = "#8bd5ca"
+path_blue = "#8aadf4"
+git_purple = "#c6a0f6"
+muted = "#939ab7"
+success_green = "#a6da95"
+warning_yellow = "#eed49f"
+error_red = "#ed8796"
+
+[os]
+disabled = true
+style = "bold white"
+format = "[$symbol]($style)"
+
+[os.symbols]
+Macos = ""
+Linux = ""
+Arch = ""
+Ubuntu = ""
+Debian = ""
+
+[username]
+show_always = false
+style_user = "bold path_blue"
+format = "[$user]($style)@"
+
+[hostname]
+ssh_only = true
+style = "bold git_purple"
+format = "[$hostname]($style) "
+
+[directory]
+style = "bold 39"
+truncation_length = 0
+read_only = " 󰌾"
+read_only_style = "error_red"
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+symbol = " "
+
+[git_commit]
+tag_symbol = '  '
+
+[git_state]
+
+[git_status]
+
+[jobs]
+symbol = " "
+style = "bold os_cyan"
+format = "[$symbol$number]($style) "
+
+[direnv]
+disabled = false
+symbol = " "
+style = "bold 39"
+format = "[$symbol$loaded]($style) "
+loaded_msg = "env"
+unloaded_msg = "env?"
+
+[docker_context]
+symbol = " "
+style = "bold os_cyan"
+format = "[$symbol $context]($style) "
+only_with_files = true
+
+[c]
+symbol = " "
+
+[rust]
+symbol = "󱘗 "
+
+[golang]
+symbol = " "
+
+[nodejs]
+symbol = " "
+
+[python]
+symbol = " "
+
+[lua]
+symbol = " "
+
+[cmd_duration]
+min_time = 1500
+format = "[󱎫 $duration](warning_yellow) "
+
+[time]
+disabled = false
+format = "[ $time](muted)"
+time_format = "%H:%M:%S"
+
+[status]
+disabled = false
+format = "[✘ $status]($style) "
+symbol = ""
+success_symbol = ""
+style = "bold error_red"
+map_symbol = false
+recognize_signal_code = true
+
+[character]
+success_symbol = "[❯](bold 76)"
+error_symbol = "[❯](bold error_red)"
+vimcmd_symbol = "[❮](bold git_purple)"
+
+[fill]
+symbol = " "
+
+[line_break]
+disabled = false
+
+[aws]
+disabled = true
+
+[package]
+disabled = true
+
+[battery]
+disabled = true
+
+[kubernetes]
+disabled = true
