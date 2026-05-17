@@ -67,7 +67,7 @@ read_only_style = "error_red"
 format = " [$path]($style)[$read_only]($read_only_style)"
 
 [git_branch]
-symbol = ""
+symbol = ""
 style = "bold git_purple"
 format = " [$symbol $branch(:$remote_branch)]($style)"
 truncation_length = 32
