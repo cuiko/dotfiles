@@ -1,0 +1,10 @@
+*~
+.*.swp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+venv/
+
+**/.claude/settings.local.json
+**/CLAUDE.local.md

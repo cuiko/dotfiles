@@ -9,7 +9,6 @@
 	defaultBranch = main
 
 [core]
-	excludesfile = ~/.config/git/gitignore
 	pager = delta
 	untrackedcache = true
 	fsmonitor = true
